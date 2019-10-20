@@ -5,16 +5,16 @@
 
 #### Besoins :
 
-* Consulter la liste des produits BileMo ;
-* Consulter les détails d’un produit BileMo ;
-* Consulter la liste des utilisateurs inscrits liés à un client sur le site web ;
-* Consulter le détail d’un utilisateur inscrit lié à un client ;
-* Ajouter un nouvel utilisateur lié à un client ;
-* Supprimer un utilisateur ajouté par un client.
+* Consulter la liste des produits BileMo
+* Consulter les détails d’un produit BileMo
+* Consulter la liste des utilisateurs inscrits liés à un client sur le site web
+* Consulter le détail d’un utilisateur inscrit lié à un client
+* Ajouter un nouvel utilisateur lié à un client
+* Supprimer un utilisateur ajouté par un client
 
 #### Contraintes :
 
-* Seuls les clients référencés peuvent accéder aux API.
+* Seuls les clients référencés peuvent accéder aux API
 * Niveaux 1, 2 et 3 du modèle de Richardson
 * Données en JSON.
 * Réponses mises en cache
