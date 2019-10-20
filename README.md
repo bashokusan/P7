@@ -1,6 +1,5 @@
 # P7
----
----
+
 ## BileMo est une entreprise offrant toute une sélection de téléphones mobiles haut de gamme.
 ### Offre : Fournir à toutes les plateformes qui le souhaitent l’accès au catalogue via une API
 
@@ -15,7 +14,7 @@
 
 #### Contraintes :
 
-* Seuls les clients référencés peuvent accéder aux API. Les clients de l’API doivent être authentifiés via Oauth ou JWT.
+* Seuls les clients référencés peuvent accéder aux API.
 * Niveaux 1, 2 et 3 du modèle de Richardson
 * Données en JSON.
 * Réponses mises en cache
