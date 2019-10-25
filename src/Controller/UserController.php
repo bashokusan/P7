@@ -16,7 +16,11 @@ use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Validator\ConstraintViolationListInterface;
 use FOS\RestBundle\Request\ParamFetcher;
 use App\Entity\ProductUser;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 
+/**
+ * @IsGranted("ROLE_USER")
+ */
 class UserController extends AbstractFOSRestController
 {
     /**
@@ -25,6 +29,7 @@ class UserController extends AbstractFOSRestController
     *      name = "app_users_list",
     * )
     * @View()
+    *
     */
     public function showAll()
     {
@@ -39,6 +44,7 @@ class UserController extends AbstractFOSRestController
     *      requirements = {"id"="\d+"}
     * )
     * @View()
+    *
     */
     public function showAction(ProductUser $user)
     {
