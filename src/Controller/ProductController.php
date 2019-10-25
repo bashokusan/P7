@@ -21,4 +21,17 @@ class ProductController extends AbstractFOSRestController
         $product = $this->getDoctrine()->getRepository(Product::class)->findAll();
         return $product;
     }
+
+    /**
+    * @Get(
+    *      path = "/items/{id}",
+    *      name = "app_items_show",
+    *      requirements = {"id"="\d+"}
+    * )
+    * @View()
+    */
+    public function showAction(Product $product)
+    {
+        return $product;
+    }
 }
