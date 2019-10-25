@@ -18,6 +18,7 @@ class ProductController extends AbstractFOSRestController
     */
     public function showAll()
     {
+        $product = $this->getDoctrine()->getRepository(Product::class)->findAll();
         return $product;
     }
 }
