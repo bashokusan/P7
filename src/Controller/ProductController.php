@@ -18,8 +18,6 @@ class ProductController extends AbstractFOSRestController
     */
     public function showAll()
     {
-        $product = new Product();
-        $product->setName('nom du produit');
         return $product;
     }
 }

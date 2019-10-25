@@ -3,35 +3,33 @@
 namespace App\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
-use JMS\Serializer\Annotation\ExclusionPolicy;
-use JMS\Serializer\Annotation\Expose;
 
 /**
- * @ORM\Entity(repositoryClass="App\Repository\ProductRepository")
- * @ExclusionPolicy("all")
+ * @ORM\Entity(repositoryClass="App\Repository\ProductUserRepository")
  */
-class Product
+class ProductUser
 {
     /**
      * @ORM\Id()
      * @ORM\GeneratedValue()
      * @ORM\Column(type="integer")
-     *
-     * @Expose
      */
     private $id;
 
     /**
      * @ORM\Column(type="string", length=255)
-     *
-     * @Expose
      */
     private $name;
 
     /**
      * @ORM\Column(type="string", length=255)
      */
-    private $reference;
+    private $email;
+
+    /**
+     * @ORM\ManyToOne(targetEntity="App\Entity\Client", inversedBy="productUsers")
+     */
+    private $client;
 
     public function getId(): ?int
     {
@@ -50,14 +48,26 @@ class Product
         return $this;
     }
 
-    public function getReference(): ?string
+    public function getEmail(): ?string
     {
-        return $this->reference;
+        return $this->email;
     }
 
-    public function setReference(string $reference): self
+    public function setEmail(string $email): self
     {
-        $this->reference = $reference;
+        $this->email = $email;
+
+        return $this;
+    }
+
+    public function getClient(): ?Client
+    {
+        return $this->client;
+    }
+
+    public function setClient(?Client $client): self
+    {
+        $this->client = $client;
 
         return $this;
     }
