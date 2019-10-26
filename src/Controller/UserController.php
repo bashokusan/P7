@@ -14,6 +14,8 @@ use App\Exception\ResourceViolationException;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Validator\ConstraintViolationListInterface;
+use Symfony\Contracts\Cache\ItemInterface;
+use Symfony\Contracts\Cache\CacheInterface;
 use FOS\RestBundle\Request\ParamFetcher;
 use App\Entity\ProductUser;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
@@ -23,6 +25,13 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
  */
 class UserController extends AbstractFOSRestController
 {
+
+    private $cache;
+
+    public function __construct(CacheInterface $cache){
+        $this->cache = $cache;
+    }
+
     /**
     * @Get(
     *      path = "/users",
@@ -31,7 +40,14 @@ class UserController extends AbstractFOSRestController
     * @View()
     *
     */
-    public function showAll()
+    public function getShowAll(){
+        return $this->cache->get('showAll', function(ItemInterface $item){
+            $item->expiresAfter(3600);
+            return $this->showAll();
+        });
+    }
+
+    private function showAll()
     {
         $users= $this->getDoctrine()->getRepository(ProductUser::class)->findAll();
         return $users;
