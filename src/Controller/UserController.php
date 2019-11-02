@@ -49,7 +49,7 @@ class UserController extends AbstractFOSRestController
 
     private function showAll()
     {
-        $users= $this->getDoctrine()->getRepository(ProductUser::class)->findAll();
+        $users= $this->getDoctrine()->getRepository(ProductUser::class)->findBy(['client' => $this->getUser()]);
         return $users;
     }
 
