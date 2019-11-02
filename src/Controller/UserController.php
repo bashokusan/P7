@@ -3,6 +3,8 @@
 namespace App\Controller;
 
 use FOS\RestBundle\Controller\AbstractFOSRestController;
+use Nelmio\ApiDocBundle\Annotation\Model;
+use Swagger\Annotations as SWG;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use FOS\RestBundle\Controller\Annotations\Get;
 use FOS\RestBundle\Controller\Annotations\Post;
@@ -38,7 +40,11 @@ class UserController extends AbstractFOSRestController
     *      name = "app_users_list",
     * )
     * @View()
-    *
+    * @SWG\Response(
+    *     response=200,
+    *     description="Retourne la liste des utilisateurs du client connecté",
+    *     @Model(type=ProductUser::class)
+    * )
     */
     public function getShowAll(){
         return $this->cache->get('showAll', function(ItemInterface $item){
@@ -54,14 +60,20 @@ class UserController extends AbstractFOSRestController
     }
 
     /**
-    * @Get(
-    *      path = "/users/{id}",
-    *      name = "app_users_show",
-    *      requirements = {"id"="\d+"}
-    * )
-    * @View()
-    *
-    */
+     * @Get(
+     *      path = "/users/{id}",
+     *      name = "app_users_show",
+     *      requirements = {"id"="\d+"}
+     * )
+     * @View()
+     * @SWG\Response(
+     *     response=200,
+     *     description="Retourne les informations de l'utilisateur du client connecté",
+     *     @Model(type=ProductUser::class)
+     * )
+     * @param ProductUser $user
+     * @return ProductUser
+     */
     public function showAction(ProductUser $user)
     {
         return $user;
@@ -77,6 +89,11 @@ class UserController extends AbstractFOSRestController
      * @param ConstraintViolationListInterface $validationErrors
      * @return \FOS\RestBundle\View\View
      * @throws ResourceViolationException
+     * @SWG\Response(
+     *     response=201,
+     *     description="Ajout d'un nouvel utilisateur",
+     *     @Model(type=ProductUser::class)
+     * )
      */
     public function createAction(ProductUser $user, ConstraintViolationListInterface $validationErrors)
     {
@@ -107,6 +124,16 @@ class UserController extends AbstractFOSRestController
      *    name = "app_user_update"
      * )
      * @ParamConverter("newUser", converter="fos_rest.request_body")
+     * @SWG\Response(
+     *     response=201,
+     *     description="Mise à jour les informations d'un utilisateur",
+     *     @Model(type=ProductUser::class)
+     * )
+     * @param ProductUser $user
+     * @param ProductUser $newUser
+     * @param ConstraintViolationListInterface $validationErrors
+     * @return \FOS\RestBundle\View\View
+     * @throws ResourceViolationException
      */
     public function updateAction(ProductUser $user, ProductUser $newUser, ConstraintViolationListInterface $validationErrors)
     {
@@ -139,6 +166,12 @@ class UserController extends AbstractFOSRestController
      *    requirements = {"id"="\d+"}
      * )
      * @View(StatusCode = 204)
+     * @SWG\Response(
+     *     response=204,
+     *     description="Suppression un utilisateur",
+     *     @Model(type=ProductUser::class)
+     * )
+     * @param ProductUser $user
      */
     public function deleteAction(ProductUser $user)
     {
