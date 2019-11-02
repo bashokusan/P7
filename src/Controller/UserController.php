@@ -107,6 +107,7 @@ class UserController extends AbstractFOSRestController
      *    name = "app_user_update"
      * )
      * @ParamConverter("newUser", converter="fos_rest.request_body")
+     * @IsGranted("USER_UPDATE", subject="user", message="Vous n'êtes pas autorisé à modifier cet utilisateur")
      */
     public function updateAction(ProductUser $user, ProductUser $newUser, ConstraintViolationListInterface $validationErrors)
     {
@@ -139,6 +140,7 @@ class UserController extends AbstractFOSRestController
      *    requirements = {"id"="\d+"}
      * )
      * @View(StatusCode = 204)
+     * @IsGranted("USER_DELETE", subject="user", message="Vous n'êtes pas autorisé à supprimer cet utilisateur")
      */
     public function deleteAction(ProductUser $user)
     {
