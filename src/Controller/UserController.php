@@ -41,8 +41,10 @@ class UserController extends AbstractFOSRestController
     *
     */
     public function getShowAll(){
+
         return $this->cache->get('showAll', function(ItemInterface $item){
             $item->expiresAfter(3600);
+
             return $this->showAll();
         });
     }
@@ -50,6 +52,7 @@ class UserController extends AbstractFOSRestController
     private function showAll()
     {
         $users= $this->getDoctrine()->getRepository(ProductUser::class)->findAll();
+
         return $users;
     }
 
