@@ -69,7 +69,7 @@ class UserController extends AbstractFOSRestController
 
     /**
      * @Post(
-     *    path = "/users",
+     *    path = "/users/create",
      *    name = "app_user_create"
      * )
      * @ParamConverter("user", converter="fos_rest.request_body")
@@ -103,7 +103,7 @@ class UserController extends AbstractFOSRestController
 
     /**
      * @Put(
-     *    path = "/users/{id}",
+     *    path = "/users/{id}/update",
      *    name = "app_user_update"
      * )
      * @ParamConverter("newUser", converter="fos_rest.request_body")
@@ -134,7 +134,7 @@ class UserController extends AbstractFOSRestController
 
     /**
      * @Delete(
-     *    path = "/users/{id}",
+     *    path = "/users/{id}/delete",
      *    name = "app_user_delete",
      *    requirements = {"id"="\d+"}
      * )
