@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use FOS\RestBundle\Controller\AbstractFOSRestController;
+use Psr\Cache\InvalidArgumentException;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use FOS\RestBundle\Controller\Annotations\Get;
 use FOS\RestBundle\Controller\Annotations\Post;
@@ -57,15 +58,25 @@ class UserController extends AbstractFOSRestController
     }
 
     /**
-    * @Get(
-    *      path = "/users/{id}",
-    *      name = "app_users_show",
-    *      requirements = {"id"="\d+"}
-    * )
-    * @View()
-    *
-    */
-    public function showAction(ProductUser $user)
+     * @Get(
+     *      path = "/users/{id}",
+     *      name = "app_users_show",
+     *      requirements = {"id"="\d+"}
+     * )
+     * @View()
+     * @param ProductUser $user
+     * @return mixed
+     * @throws InvalidArgumentException
+     */
+    public function getShowUnique(ProductUser $user){
+        return $this->cache->get('showAction', function(ItemInterface $item) use ($user) {
+            $item->expiresAfter(3600);
+
+            return $this->showAction($user);
+        });
+    }
+
+    private function showAction(ProductUser $user)
     {
         return $user;
     }
@@ -80,6 +91,7 @@ class UserController extends AbstractFOSRestController
      * @param ConstraintViolationListInterface $validationErrors
      * @return \FOS\RestBundle\View\View
      * @throws ResourceViolationException
+     * @throws InvalidArgumentException
      */
     public function createAction(ProductUser $user, ConstraintViolationListInterface $validationErrors)
     {
@@ -98,6 +110,8 @@ class UserController extends AbstractFOSRestController
         $em->persist($user);
         $em->flush();
 
+        $this->cache->delete('showAll');
+
         return $this->view(
             $user,
             Response::HTTP_CREATED,
@@ -110,6 +124,8 @@ class UserController extends AbstractFOSRestController
      *    name = "app_user_update"
      * )
      * @ParamConverter("newUser", converter="fos_rest.request_body")
+     * @throws ResourceViolationException
+     * @throws InvalidArgumentException
      */
     public function updateAction(ProductUser $user, ProductUser $newUser, ConstraintViolationListInterface $validationErrors)
     {
@@ -129,6 +145,9 @@ class UserController extends AbstractFOSRestController
         $em = $this->getDoctrine()->getManager();
         $em->flush();
 
+        $this->cache->delete('showAll');
+        $this->cache->delete('showAction');
+
         return $this->view(
             $user,
             Response::HTTP_CREATED,
@@ -142,12 +161,16 @@ class UserController extends AbstractFOSRestController
      *    requirements = {"id"="\d+"}
      * )
      * @View(StatusCode = 204)
+     * @throws InvalidArgumentException
      */
     public function deleteAction(ProductUser $user)
     {
         $em = $this->getDoctrine()->getManager();
         $em->remove($user);
         $em->flush();
+
+        $this->cache->delete('showAll');
+        $this->cache->delete('showAction');
 
         return;
     }
