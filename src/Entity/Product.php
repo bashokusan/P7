@@ -5,10 +5,20 @@ namespace App\Entity;
 use Doctrine\ORM\Mapping as ORM;
 use JMS\Serializer\Annotation\ExclusionPolicy;
 use JMS\Serializer\Annotation\Expose;
+use Hateoas\Configuration\Annotation as Hateoas;
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\ProductRepository")
  * @ExclusionPolicy("all")
+ *
+ * @Hateoas\Relation(
+ *    "self",
+ *    href = @Hateoas\Route(
+ *        "app_items_show",
+ *        parameters = {"id" = "expr(object.getId())"},
+ *        absolute = true
+ *    )
+ * )
  */
 class Product
 {
