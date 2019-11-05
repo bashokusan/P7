@@ -5,6 +5,7 @@ namespace App\Controller;
 use FOS\RestBundle\Controller\AbstractFOSRestController;
 use Nelmio\ApiDocBundle\Annotation\Model;
 use Swagger\Annotations as SWG;
+use Psr\Cache\InvalidArgumentException;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use FOS\RestBundle\Controller\Annotations\Get;
 use FOS\RestBundle\Controller\Annotations\Post;
@@ -47,15 +48,18 @@ class UserController extends AbstractFOSRestController
     * )
     */
     public function getShowAll(){
+
         return $this->cache->get('showAll', function(ItemInterface $item){
             $item->expiresAfter(3600);
+
             return $this->showAll();
         });
     }
 
     private function showAll()
     {
-        $users= $this->getDoctrine()->getRepository(ProductUser::class)->findAll();
+        $users= $this->getDoctrine()->getRepository(ProductUser::class)->findBy(['client' => $this->getUser()]);
+      
         return $users;
     }
 
@@ -75,6 +79,19 @@ class UserController extends AbstractFOSRestController
      * @return ProductUser
      */
     public function showAction(ProductUser $user)
+     * @param ProductUser $user
+     * @return mixed
+     * @throws InvalidArgumentException
+     */
+    public function getShowUnique(ProductUser $user){
+        return $this->cache->get('showAction', function(ItemInterface $item) use ($user) {
+            $item->expiresAfter(3600);
+
+            return $this->showAction($user);
+        });
+    }
+
+    private function showAction(ProductUser $user)
     {
         return $user;
     }
@@ -94,6 +111,7 @@ class UserController extends AbstractFOSRestController
      *     description="Ajout d'un nouvel utilisateur",
      *     @Model(type=ProductUser::class)
      * )
+     * @throws InvalidArgumentException
      */
     public function createAction(ProductUser $user, ConstraintViolationListInterface $validationErrors)
     {
@@ -111,6 +129,8 @@ class UserController extends AbstractFOSRestController
         $em = $this->getDoctrine()->getManager();
         $em->persist($user);
         $em->flush();
+
+        $this->cache->delete('showAll');
 
         return $this->view(
             $user,
@@ -134,6 +154,7 @@ class UserController extends AbstractFOSRestController
      * @param ConstraintViolationListInterface $validationErrors
      * @return \FOS\RestBundle\View\View
      * @throws ResourceViolationException
+     * @throws InvalidArgumentException
      */
     public function updateAction(ProductUser $user, ProductUser $newUser, ConstraintViolationListInterface $validationErrors)
     {
@@ -152,6 +173,9 @@ class UserController extends AbstractFOSRestController
 
         $em = $this->getDoctrine()->getManager();
         $em->flush();
+
+        $this->cache->delete('showAll');
+        $this->cache->delete('showAction');
 
         return $this->view(
             $user,
@@ -172,12 +196,16 @@ class UserController extends AbstractFOSRestController
      *     @Model(type=ProductUser::class)
      * )
      * @param ProductUser $user
+     * @throws InvalidArgumentException
      */
     public function deleteAction(ProductUser $user)
     {
         $em = $this->getDoctrine()->getManager();
         $em->remove($user);
         $em->flush();
+
+        $this->cache->delete('showAll');
+        $this->cache->delete('showAction');
 
         return;
     }
