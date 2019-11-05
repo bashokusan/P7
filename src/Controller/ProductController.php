@@ -13,7 +13,7 @@ class ProductController extends AbstractFOSRestController
 {
     /**
     * @Get(
-    *      path = "/items",
+    *      path = "api/items",
     *      name = "app_items_list",
     * )
     * @View()
@@ -32,7 +32,7 @@ class ProductController extends AbstractFOSRestController
 
     /**
     * @Get(
-    *      path = "/items/{id}",
+    *      path = "api/items/{id}",
     *      name = "app_items_show",
     *      requirements = {"id"="\d+"}
     * )
