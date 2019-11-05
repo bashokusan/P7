@@ -25,24 +25,6 @@ use Hateoas\Configuration\Annotation as Hateoas;
   * )
   *
   * @Hateoas\Relation(
-  *    "update",
-  *    href = @Hateoas\Route(
-  *        "app_user_update",
-  *        parameters = {"id" = "expr(object.getId())"},
-  *        absolute = true
-  *    )
-  * )
-  *
-  * @Hateoas\Relation(
-  *    "delete",
-  *    href = @Hateoas\Route(
-  *        "app_user_delete",
-  *        parameters = {"id" = "expr(object.getId())"},
-  *        absolute = true
-  *    )
-  * )
-  *
-  * @Hateoas\Relation(
   *    "client",
   *    embedded = @Hateoas\Embedded("expr(object.getclient())")
   * )
