@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use FOS\RestBundle\Controller\AbstractFOSRestController;
 use Nelmio\ApiDocBundle\Annotation\Model;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Swagger\Annotations as SWG;
 use Psr\Cache\InvalidArgumentException;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
@@ -146,14 +147,15 @@ class UserController extends AbstractFOSRestController
      *     description="Mise à jour les informations d'un utilisateur",
      *     @Model(type=ProductUser::class)
      * )
-     * @param ProductUser $user
+     * @param ProductUser $productUser
      * @param ProductUser $newUser
      * @param ConstraintViolationListInterface $validationErrors
      * @return \FOS\RestBundle\View\View
      * @throws ResourceViolationException
      * @throws InvalidArgumentException
+     * @Security("is_granted('ROLE_USER') and user == productUser.getClient()", message="Vous ne pouvez pas modifier cet utilisateur")
      */
-    public function updateAction(ProductUser $user, ProductUser $newUser, ConstraintViolationListInterface $validationErrors)
+    public function updateAction(ProductUser $productUser, ProductUser $newUser, ConstraintViolationListInterface $validationErrors)
     {
         if(count($validationErrors) > 0){
             //return $this->view($validationErrors, Response::HTTP_BAD_REQUEST);
@@ -165,8 +167,8 @@ class UserController extends AbstractFOSRestController
 
         }
 
-        $user->setName($newUser->getName());
-        $user->setEmail($newUser->getEmail());
+        $productUser->setName($newUser->getName());
+        $productUser->setEmail($newUser->getEmail());
 
         $em = $this->getDoctrine()->getManager();
         $em->flush();
@@ -175,9 +177,9 @@ class UserController extends AbstractFOSRestController
         $this->cache->delete('showAction');
 
         return $this->view(
-            $user,
+            $productUser,
             Response::HTTP_CREATED,
-            ['Location' => $this->generateUrl('app_users_show', ['id' => $user->getId(), UrlGeneratorInterface::ABSOLUTE_URL])]);
+            ['Location' => $this->generateUrl('app_users_show', ['id' => $productUser->getId(), UrlGeneratorInterface::ABSOLUTE_URL])]);
     }
 
     /**
@@ -192,13 +194,14 @@ class UserController extends AbstractFOSRestController
      *     description="Suppression un utilisateur",
      *     @Model(type=ProductUser::class)
      * )
-     * @param ProductUser $user
+     * @param ProductUser $productUser
      * @throws InvalidArgumentException
+     * @Security("is_granted('ROLE_USER') and user == productUser.getClient()", message="Vous ne pouvez pas supprimer cet utilisateur")
      */
-    public function deleteAction(ProductUser $user)
+    public function deleteAction(ProductUser $productUser)
     {
         $em = $this->getDoctrine()->getManager();
-        $em->remove($user);
+        $em->remove($productUser);
         $em->flush();
 
         $this->cache->delete('showAll');
