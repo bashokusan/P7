@@ -116,7 +116,7 @@ class UserController extends AbstractFOSRestController
      */
     public function createAction(ProductUser $user, ConstraintViolationListInterface $validationErrors)
     {
-        //$user->setClient($this->getUser());
+        $user->setClient($this->getUser());
 
         if(count($validationErrors) > 0){
             //return $this->view($validationErrors, Response::HTTP_BAD_REQUEST);
