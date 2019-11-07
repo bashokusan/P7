@@ -22,6 +22,7 @@ class ProductController extends AbstractFOSRestController
     *     description="Retourne la liste des produits",
     *     @Model(type=Product::class)
     * )
+    * @SWG\Tag(name="Produits")
     */
     public function showAll()
     {
@@ -42,6 +43,7 @@ class ProductController extends AbstractFOSRestController
     *     description="Retourne les informations d'un produit",
     *     @Model(type=Product::class)
     * )
+    * @SWG\Tag(name="Produits")
     * @param Product $product
     * @return Product
     */

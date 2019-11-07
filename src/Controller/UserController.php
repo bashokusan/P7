@@ -47,6 +47,7 @@ class UserController extends AbstractFOSRestController
      *     description="Retourne la liste des utilisateurs du client connecté",
      *     @Model(type=ProductUser::class)
      * )
+     * @SWG\Tag(name="Utilisateurs")
      */
     public function getShowAll(){
 
@@ -76,6 +77,7 @@ class UserController extends AbstractFOSRestController
      *     description="Retourne les informations de l'utilisateur du client connecté",
      *     @Model(type=ProductUser::class)
      * )
+     * @SWG\Tag(name="Utilisateurs")
      * @param ProductUser $user
      * @return ProductUser
      * @return mixed
@@ -109,6 +111,7 @@ class UserController extends AbstractFOSRestController
      *     description="Ajout d'un nouvel utilisateur",
      *     @Model(type=ProductUser::class)
      * )
+     * @SWG\Tag(name="Utilisateurs")
      * @throws InvalidArgumentException
      */
     public function createAction(ProductUser $user, ConstraintViolationListInterface $validationErrors)
@@ -147,6 +150,7 @@ class UserController extends AbstractFOSRestController
      *     description="Mise à jour les informations d'un utilisateur",
      *     @Model(type=ProductUser::class)
      * )
+     * @SWG\Tag(name="Utilisateurs")
      * @param ProductUser $productUser
      * @param ProductUser $newUser
      * @param ConstraintViolationListInterface $validationErrors
@@ -194,6 +198,7 @@ class UserController extends AbstractFOSRestController
      *     description="Suppression un utilisateur",
      *     @Model(type=ProductUser::class)
      * )
+     * @SWG\Tag(name="Utilisateurs")
      * @param ProductUser $productUser
      * @throws InvalidArgumentException
      * @Security("is_granted('ROLE_USER') and user == productUser.getClient()", message="Vous ne pouvez pas supprimer cet utilisateur")
