@@ -6,9 +6,13 @@ use Doctrine\ORM\Mapping as ORM;
 use JMS\Serializer\Annotation\ExclusionPolicy;
 use JMS\Serializer\Annotation\Expose;
 use Hateoas\Configuration\Annotation as Hateoas;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\ProductRepository")
+ * @UniqueEntity(fields={"name"}, message="Cet produit existe déjà", groups={"add"})
+ *
  * @ExclusionPolicy("all")
  *
  * @Hateoas\Relation(
@@ -33,6 +37,7 @@ class Product
 
     /**
      * @ORM\Column(type="string", length=255)
+     * @Assert\NotBlank(groups={"add"})
      *
      * @Expose
      */
@@ -40,6 +45,7 @@ class Product
 
     /**
      * @ORM\Column(type="string", length=255)
+     * @Assert\NotBlank(groups={"add"})
      *
      * @Expose
      */
