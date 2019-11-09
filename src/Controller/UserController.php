@@ -18,6 +18,7 @@ use App\Exception\ResourceViolationException;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Validator\ConstraintViolationListInterface;
+use Symfony\Component\Validator\Validator\ValidatorInterface;
 use Symfony\Contracts\Cache\ItemInterface;
 use Symfony\Contracts\Cache\CacheInterface;
 use FOS\RestBundle\Request\ParamFetcher;
@@ -103,28 +104,24 @@ class UserController extends AbstractFOSRestController
      * )
      * @ParamConverter("user", converter="fos_rest.request_body")
      * @param ProductUser $user
-     * @param ConstraintViolationListInterface $validationErrors
+     * @param ValidatorInterface $validator
      * @return \FOS\RestBundle\View\View
-     * @throws ResourceViolationException
+     * @throws InvalidArgumentException
      * @SWG\Response(
      *     response=201,
      *     description="Ajout d'un nouvel utilisateur",
      *     @Model(type=ProductUser::class)
      * )
      * @SWG\Tag(name="Utilisateurs")
-     * @throws InvalidArgumentException
      */
-    public function createAction(ProductUser $user, ConstraintViolationListInterface $validationErrors)
+    public function createAction(ProductUser $user, ValidatorInterface $validator)
     {
         $user->setClient($this->getUser());
 
+        $validationErrors = $validator->validate($user, null, ['registration']);
+
         if(count($validationErrors) > 0){
-            //return $this->view($validationErrors, Response::HTTP_BAD_REQUEST);
-            $message = 'The JSON sent contains invalid data. Here are the errors you need to correct: ';
-            foreach ($validationErrors as $violation) {
-                $message .= sprintf("Field %s: %s ", $violation->getPropertyPath(), $violation->getMessage());
-            }
-            throw new ResourceViolationException($message);
+            return $this->view($validationErrors, Response::HTTP_BAD_REQUEST);
         }
 
         $em = $this->getDoctrine()->getManager();
@@ -132,6 +129,7 @@ class UserController extends AbstractFOSRestController
         $em->flush();
 
         $this->cache->delete('showAll');
+        $this->cache->delete('showAction');
 
         return $this->view(
             $user,
@@ -142,7 +140,8 @@ class UserController extends AbstractFOSRestController
     /**
      * @Put(
      *    path = "api/users/{id}",
-     *    name = "app_user_update"
+     *    name = "app_user_update",
+     *    requirements = {"id"="\d+"}
      * )
      * @ParamConverter("newUser", converter="fos_rest.request_body")
      * @SWG\Response(
@@ -155,24 +154,22 @@ class UserController extends AbstractFOSRestController
      * @param ProductUser $newUser
      * @param ConstraintViolationListInterface $validationErrors
      * @return \FOS\RestBundle\View\View
-     * @throws ResourceViolationException
      * @throws InvalidArgumentException
      * @Security("is_granted('ROLE_USER') and user == productUser.getClient()", message="Vous ne pouvez pas modifier cet utilisateur")
      */
     public function updateAction(ProductUser $productUser, ProductUser $newUser, ConstraintViolationListInterface $validationErrors)
     {
         if(count($validationErrors) > 0){
-            //return $this->view($validationErrors, Response::HTTP_BAD_REQUEST);
-            $message = 'The JSON sent contains invalid data. Here are the errors you need to correct: ';
-            foreach ($validationErrors as $violation) {
-                $message .= sprintf("Field %s: %s ", $violation->getPropertyPath(), $violation->getMessage());
-            }
-            throw new ResourceViolationException($message);
-
+            return $this->view($validationErrors, Response::HTTP_BAD_REQUEST);
         }
 
-        $productUser->setName($newUser->getName());
-        $productUser->setEmail($newUser->getEmail());
+        if (!empty($newUser->getName())){
+            $productUser->setName($newUser->getName());
+        };
+
+        if (!empty($newUser->getEmail())){
+            $productUser->setEmail($newUser->getEmail());
+        };
 
         $em = $this->getDoctrine()->getManager();
         $em->flush();
