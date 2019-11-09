@@ -11,7 +11,7 @@ use Hateoas\Configuration\Annotation as Hateoas;
 
   /**
   * @ORM\Entity(repositoryClass="App\Repository\ProductUserRepository")
-  * @UniqueEntity(fields={"email"}, message="Cet utilisateur existe déjà")
+  * @UniqueEntity(fields={"email"}, message="Cet utilisateur existe déjà", groups={"registration"})
   *
   * @ExclusionPolicy("all")
   *
@@ -42,7 +42,7 @@ class ProductUser
 
     /**
      * @ORM\Column(type="string", length=255)
-     * @Assert\NotBlank
+     * @Assert\NotBlank(groups={"registration"})
      *
      * @Expose
      */
@@ -50,7 +50,7 @@ class ProductUser
 
     /**
      * @ORM\Column(type="string", length=255)
-     * @Assert\NotBlank
+     * @Assert\NotBlank(groups={"registration"})
      *
      * @Expose
      */
