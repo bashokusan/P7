@@ -29,11 +29,11 @@ La documentation de l'API est disponible sur domaine/doc
 1. Cloner le projet pour installer son contenu
 ```
 cd projects/
-git clone ...
+git clone https://github.com/bashokusan/P7.git
 ```
 2. Utiliser Composer pour installer les dépendances dans le dossier vendor
 ```
-cd my-project/
+cd P7/
 composer install
 ```
 3. Créer la database
