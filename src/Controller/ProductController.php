@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Manager\ProductManager;
 use FOS\RestBundle\Controller\AbstractFOSRestController;
 use FOS\RestBundle\Controller\Annotations\Get;
 use FOS\RestBundle\Controller\Annotations\View;
@@ -15,18 +16,15 @@ use Swagger\Annotations as SWG;
 use Nelmio\ApiDocBundle\Annotation\Model;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
-use Symfony\Contracts\Cache\CacheInterface;
-use Symfony\Contracts\Cache\ItemInterface;
-use Psr\Cache\InvalidArgumentException;
 use Symfony\Component\Validator\ConstraintViolationListInterface;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 class ProductController extends AbstractFOSRestController
 {
-    private $cache;
+    private $manager;
 
-    public function __construct(CacheInterface $cache){
-        $this->cache = $cache;
+    public function __construct(ProductManager $manager){
+        $this->manager = $manager;
     }
 
     /**
@@ -41,22 +39,10 @@ class ProductController extends AbstractFOSRestController
      *     @Model(type=Product::class)
      * )
      * @SWG\Tag(name="Produits")
-     * @throws InvalidArgumentException
      */
-    public function getShowAll(){
+    public function showAllItems(){
 
-        return $this->cache->get('showAll', function(ItemInterface $item){
-            $item->expiresAfter(3600);
-
-            return $this->showAll();
-        });
-    }
-
-    public function showAll()
-    {
-        $product = $this->getDoctrine()->getRepository(Product::class)->findAll();
-
-        return $product;
+        return $this->manager->getShowAll();
     }
 
     /**
@@ -74,19 +60,9 @@ class ProductController extends AbstractFOSRestController
      * @SWG\Tag(name="Produits")
      * @param Product $product
      * @return Product
-     * @throws InvalidArgumentException
      */
-    public function getShowUnique(Product $product){
-        return $this->cache->get('showAction', function(ItemInterface $item) use ($product) {
-            $item->expiresAfter(3600);
-
-            return $this->showAction($product);
-        });
-    }
-
-    public function showAction(Product $product)
-    {
-        return $product;
+    public function getShowUniqueItem(Product $product){
+        return $this->manager->getShowUnique($product);
     }
 
     /**
@@ -105,7 +81,6 @@ class ProductController extends AbstractFOSRestController
      * )
      * @SWG\Tag(name="Produits")
      * @Security("is_granted('ROLE_ADMIN')", message="Vous ne pouvez pas ajouter un produit")
-     * @throws InvalidArgumentException
      */
     public function createAction(Product $product, ValidatorInterface $validator)
     {
@@ -119,8 +94,7 @@ class ProductController extends AbstractFOSRestController
         $em->persist($product);
         $em->flush();
 
-        $this->cache->delete('showAll');
-        $this->cache->delete('showAction');
+        $this->manager->deleteCache();
 
         return $this->view(
             $product,
@@ -146,7 +120,6 @@ class ProductController extends AbstractFOSRestController
      * @param ConstraintViolationListInterface $validationErrors
      * @return \FOS\RestBundle\View\View
      * @Security("is_granted('ROLE_ADMIN')", message="Vous ne pouvez pas modifier ce produit")
-     * @throws InvalidArgumentException
      */
     public function updateAction(Product $product, Product $newProduct, ConstraintViolationListInterface $validationErrors)
     {
@@ -165,8 +138,7 @@ class ProductController extends AbstractFOSRestController
         $em = $this->getDoctrine()->getManager();
         $em->flush();
 
-        $this->cache->delete('showAll');
-        $this->cache->delete('showAction');
+        $this->manager->deleteCache();
 
         return $this->view(
             $product,
@@ -189,7 +161,6 @@ class ProductController extends AbstractFOSRestController
      * @SWG\Tag(name="Produits")
      * @param Product $product
      * @Security("is_granted('ROLE_ADMIN')", message="Vous ne pouvez pas supprimer ce produit")
-     * @throws InvalidArgumentException
      */
     public function deleteAction(Product $product)
     {
@@ -197,8 +168,7 @@ class ProductController extends AbstractFOSRestController
         $em->remove($product);
         $em->flush();
 
-        $this->cache->delete('showAll');
-        $this->cache->delete('showAction');
+        $this->manager->deleteCache();
 
         return;
     }

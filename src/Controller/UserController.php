@@ -2,26 +2,21 @@
 
 namespace App\Controller;
 
+use App\Manager\UserManager;
 use FOS\RestBundle\Controller\AbstractFOSRestController;
 use Nelmio\ApiDocBundle\Annotation\Model;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Swagger\Annotations as SWG;
-use Psr\Cache\InvalidArgumentException;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use FOS\RestBundle\Controller\Annotations\Get;
 use FOS\RestBundle\Controller\Annotations\Post;
 use FOS\RestBundle\Controller\Annotations\View;
 use FOS\RestBundle\Controller\Annotations\Delete;
 use FOS\RestBundle\Controller\Annotations\Put;
-use FOS\RestBundle\Controller\Annotations\QueryParam;
-use App\Exception\ResourceViolationException;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Validator\ConstraintViolationListInterface;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
-use Symfony\Contracts\Cache\ItemInterface;
-use Symfony\Contracts\Cache\CacheInterface;
-use FOS\RestBundle\Request\ParamFetcher;
 use App\Entity\ProductUser;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 
@@ -31,10 +26,13 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 class UserController extends AbstractFOSRestController
 {
 
-    private $cache;
+    /**
+     * @var UserManager
+     */
+    private $manager;
 
-    public function __construct(CacheInterface $cache){
-        $this->cache = $cache;
+    public function __construct(UserManager $manager){
+        $this->manager = $manager;
     }
 
     /**
@@ -50,20 +48,9 @@ class UserController extends AbstractFOSRestController
      * )
      * @SWG\Tag(name="Utilisateurs")
      */
-    public function getShowAll(){
+    public function showAllUsers(){
 
-        return $this->cache->get('showAll', function(ItemInterface $item){
-            $item->expiresAfter(3600);
-
-            return $this->showAll();
-        });
-    }
-
-    private function showAll()
-    {
-        $users= $this->getDoctrine()->getRepository(ProductUser::class)->findBy(['client' => $this->getUser()]);
-
-        return $users;
+        return $this->manager->getShowAll();
     }
 
     /**
@@ -82,19 +69,9 @@ class UserController extends AbstractFOSRestController
      * @param ProductUser $user
      * @return ProductUser
      * @return mixed
-     * @throws InvalidArgumentException
      */
-    public function getShowUnique(ProductUser $user){
-        return $this->cache->get('showAction', function(ItemInterface $item) use ($user) {
-            $item->expiresAfter(3600);
-
-            return $this->showAction($user);
-        });
-    }
-
-    private function showAction(ProductUser $user)
-    {
-        return $user;
+    public function showUniqueUser(ProductUser $user){
+        return $this->manager->getShowUnique($user);
     }
 
     /**
@@ -106,7 +83,6 @@ class UserController extends AbstractFOSRestController
      * @param ProductUser $user
      * @param ValidatorInterface $validator
      * @return \FOS\RestBundle\View\View
-     * @throws InvalidArgumentException
      * @SWG\Response(
      *     response=201,
      *     description="Ajout d'un nouvel utilisateur",
@@ -128,8 +104,7 @@ class UserController extends AbstractFOSRestController
         $em->persist($user);
         $em->flush();
 
-        $this->cache->delete('showAll');
-        $this->cache->delete('showAction');
+        $this->manager->deleteCache();
 
         return $this->view(
             $user,
@@ -154,7 +129,6 @@ class UserController extends AbstractFOSRestController
      * @param ProductUser $newUser
      * @param ConstraintViolationListInterface $validationErrors
      * @return \FOS\RestBundle\View\View
-     * @throws InvalidArgumentException
      * @Security("is_granted('ROLE_USER') and user == productUser.getClient()", message="Vous ne pouvez pas modifier cet utilisateur")
      */
     public function updateAction(ProductUser $productUser, ProductUser $newUser, ConstraintViolationListInterface $validationErrors)
@@ -174,8 +148,7 @@ class UserController extends AbstractFOSRestController
         $em = $this->getDoctrine()->getManager();
         $em->flush();
 
-        $this->cache->delete('showAll');
-        $this->cache->delete('showAction');
+        $this->manager->deleteCache();
 
         return $this->view(
             $productUser,
@@ -197,7 +170,6 @@ class UserController extends AbstractFOSRestController
      * )
      * @SWG\Tag(name="Utilisateurs")
      * @param ProductUser $productUser
-     * @throws InvalidArgumentException
      * @Security("is_granted('ROLE_USER') and user == productUser.getClient()", message="Vous ne pouvez pas supprimer cet utilisateur")
      */
     public function deleteAction(ProductUser $productUser)
@@ -206,8 +178,7 @@ class UserController extends AbstractFOSRestController
         $em->remove($productUser);
         $em->flush();
 
-        $this->cache->delete('showAll');
-        $this->cache->delete('showAction');
+        $this->manager->deleteCache();
 
         return;
     }
