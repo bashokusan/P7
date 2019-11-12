@@ -43,7 +43,7 @@ class UserController extends AbstractFOSRestController
      * @View()
      * @SWG\Response(
      *     response=200,
-     *     description="Retourne la liste des utilisateurs du client connecté",
+     *     description="Return the list of a client's users",
      *     @Model(type=ProductUser::class)
      * )
      * @SWG\Tag(name="Utilisateurs")
@@ -62,7 +62,7 @@ class UserController extends AbstractFOSRestController
      * @View()
      * @SWG\Response(
      *     response=200,
-     *     description="Retourne les informations de l'utilisateur du client connecté",
+     *     description="Return information of a user",
      *     @Model(type=ProductUser::class)
      * )
      * @SWG\Tag(name="Utilisateurs")
@@ -85,7 +85,7 @@ class UserController extends AbstractFOSRestController
      * @return \FOS\RestBundle\View\View
      * @SWG\Response(
      *     response=201,
-     *     description="Ajout d'un nouvel utilisateur",
+     *     description="Add a new user",
      *     @Model(type=ProductUser::class)
      * )
      * @SWG\Tag(name="Utilisateurs")
@@ -121,7 +121,7 @@ class UserController extends AbstractFOSRestController
      * @ParamConverter("newUser", converter="fos_rest.request_body")
      * @SWG\Response(
      *     response=201,
-     *     description="Mise à jour les informations d'un utilisateur",
+     *     description="Update a user",
      *     @Model(type=ProductUser::class)
      * )
      * @SWG\Tag(name="Utilisateurs")
@@ -165,7 +165,7 @@ class UserController extends AbstractFOSRestController
      * @View(StatusCode = 204)
      * @SWG\Response(
      *     response=204,
-     *     description="Suppression un utilisateur",
+     *     description="Delete a user",
      *     @Model(type=ProductUser::class)
      * )
      * @SWG\Tag(name="Utilisateurs")

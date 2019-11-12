@@ -35,7 +35,7 @@ class ProductController extends AbstractFOSRestController
      * @View()
      * @SWG\Response(
      *     response=200,
-     *     description="Retourne la liste des produits",
+     *     description="Return the list of BileMo products",
      *     @Model(type=Product::class)
      * )
      * @SWG\Tag(name="Produits")
@@ -54,7 +54,7 @@ class ProductController extends AbstractFOSRestController
      * @View()
      * @SWG\Response(
      *     response=200,
-     *     description="Retourne les informations d'un produit",
+     *     description="Return information of a product",
      *     @Model(type=Product::class)
      * )
      * @SWG\Tag(name="Produits")
@@ -67,7 +67,7 @@ class ProductController extends AbstractFOSRestController
 
     /**
      * @Post(
-     *    path = "api/items",
+     *    path = "api/items/c",
      *    name = "app_item_create"
      * )
      * @ParamConverter("product", converter="fos_rest.request_body")
@@ -76,7 +76,7 @@ class ProductController extends AbstractFOSRestController
      * @return \FOS\RestBundle\View\View
      * @SWG\Response(
      *     response=201,
-     *     description="Ajout d'un nouveau produit",
+     *     description="Add a new product (admin only)",
      *     @Model(type=Product::class)
      * )
      * @SWG\Tag(name="Produits")
@@ -104,14 +104,14 @@ class ProductController extends AbstractFOSRestController
 
     /**
      * @Put(
-     *    path = "api/items/{id}",
+     *    path = "api/items/c/{id}",
      *    name = "app_item_update",
      *    requirements = {"id"="\d+"}
      * )
      * @ParamConverter("newProduct", converter="fos_rest.request_body")
      * @SWG\Response(
      *     response=201,
-     *     description="Mise à jour les informations d'un produit",
+     *     description="Update a product (admin only)",
      *     @Model(type=Product::class)
      * )
      * @SWG\Tag(name="Produits")
@@ -148,14 +148,14 @@ class ProductController extends AbstractFOSRestController
 
     /**
      * @Delete(
-     *    path = "api/items/{id}",
+     *    path = "api/items/c/{id}",
      *    name = "app_item_delete",
      *    requirements = {"id"="\d+"}
      * )
      * @View(StatusCode = 204)
      * @SWG\Response(
      *     response=204,
-     *     description="Suppression un produit",
+     *     description="Delete a product (admin only)",
      *     @Model(type=Product::class)
      * )
      * @SWG\Tag(name="Produits")
