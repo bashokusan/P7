@@ -1,3 +1,5 @@
+[![Codacy Badge](https://api.codacy.com/project/badge/Grade/a8a53bc40db64af89260c583062c9b3d)](https://www.codacy.com/manual/bashokusan/P7?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=bashokusan/P7&amp;utm_campaign=Badge_Grade)
+
 # BileMo API
 
 ## BileMo est une entreprise offrant toute une sélection de téléphones mobiles haut de gamme.
