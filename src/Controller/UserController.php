@@ -40,7 +40,7 @@ class UserController extends AbstractFOSRestController
      *      path = "api/users",
      *      name = "app_users_list",
      * )
-     * @View()
+     * @View(serializerGroups={"list"})
      * @SWG\Response(
      *     response=200,
      *     description="Return the list of a client's users",
@@ -59,7 +59,7 @@ class UserController extends AbstractFOSRestController
      *      name = "app_users_show",
      *      requirements = {"id"="\d+"}
      * )
-     * @View()
+     * @View(serializerGroups={"detail"})
      * @SWG\Response(
      *     response=200,
      *     description="Return information of a user",
@@ -143,6 +143,14 @@ class UserController extends AbstractFOSRestController
 
         if (!empty($newUser->getEmail())){
             $productUser->setEmail($newUser->getEmail());
+        };
+
+        if (!empty($newUser->getPhone())){
+            $productUser->setPhone($newUser->getPhone());
+        };
+
+        if (!empty($newUser->getAddress())){
+            $productUser->setAddress($newUser->getAddress());
         };
 
         $em = $this->getDoctrine()->getManager();

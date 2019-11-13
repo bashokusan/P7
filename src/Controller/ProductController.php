@@ -32,7 +32,7 @@ class ProductController extends AbstractFOSRestController
      *      path = "api/items",
      *      name = "app_items_list",
      * )
-     * @View()
+     * @View(serializerGroups={"list"})
      * @SWG\Response(
      *     response=200,
      *     description="Return the list of BileMo products",
@@ -51,7 +51,7 @@ class ProductController extends AbstractFOSRestController
      *      name = "app_items_show",
      *      requirements = {"id"="\d+"}
      * )
-     * @View()
+     * @View(serializerGroups={"detail"})
      * @SWG\Response(
      *     response=200,
      *     description="Return information of a product",

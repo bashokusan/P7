@@ -33,7 +33,7 @@ class UserManager
 
     public function getShowAll(){
 
-        return $this->cache->get('showAll', function(ItemInterface $item){
+        return $this->cache->get('showAllUser', function(ItemInterface $item){
             $item->expiresAfter(3600);
 
             return $this->showAll();
@@ -48,7 +48,7 @@ class UserManager
     }
 
     public function getShowUnique(ProductUser $productUser){
-        return $this->cache->get('showAction', function(ItemInterface $item) use ($productUser) {
+        return $this->cache->get('showActionUser', function(ItemInterface $item) use ($productUser) {
             $item->expiresAfter(3600);
 
             return $this->showAction($productUser);
@@ -62,7 +62,7 @@ class UserManager
 
     public function deleteCache()
     {
-        $this->cache->delete('showAll');
-        $this->cache->delete('showAction');
+        $this->cache->delete('showAllUser');
+        $this->cache->delete('showActionUser');
     }
 }

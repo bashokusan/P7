@@ -27,7 +27,7 @@ class ProductManager
 
     public function getShowAll(){
 
-        return $this->cache->get('showAll', function(ItemInterface $item){
+        return $this->cache->get('showAllProduct', function(ItemInterface $item){
             $item->expiresAfter(3600);
 
             return $this->showAll();
@@ -42,7 +42,7 @@ class ProductManager
     }
 
     public function getShowUnique(Product $product){
-        return $this->cache->get('showAction', function(ItemInterface $item) use ($product) {
+        return $this->cache->get('showActionProduct', function(ItemInterface $item) use ($product) {
             $item->expiresAfter(3600);
 
             return $this->showAction($product);
@@ -56,7 +56,7 @@ class ProductManager
 
     public function deleteCache()
     {
-        $this->cache->delete('showAll');
-        $this->cache->delete('showAction');
+        $this->cache->delete('showAllProduct');
+        $this->cache->delete('showActionProduct');
     }
 }

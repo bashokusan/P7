@@ -3,17 +3,14 @@
 namespace App\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use JMS\Serializer\Annotation\Groups;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Validator\Constraints as Assert;
-use JMS\Serializer\Annotation\ExclusionPolicy;
-use JMS\Serializer\Annotation\Expose;
 use Hateoas\Configuration\Annotation as Hateoas;
 
   /**
   * @ORM\Entity(repositoryClass="App\Repository\ProductUserRepository")
   * @UniqueEntity(fields={"email"}, message="Cet utilisateur existe déjà", groups={"registration"})
-  *
-  * @ExclusionPolicy("all")
   *
   * @Hateoas\Relation(
   *    "self",
@@ -21,7 +18,8 @@ use Hateoas\Configuration\Annotation as Hateoas;
   *        "app_users_show",
   *        parameters = {"id" = "expr(object.getId())"},
   *        absolute = true
-  *    )
+  *    ),
+   *     exclusion = @Hateoas\Exclusion(groups={"list"})
   * )
   *
   * @Hateoas\Relation(
@@ -35,31 +33,41 @@ class ProductUser
      * @ORM\Id()
      * @ORM\GeneratedValue()
      * @ORM\Column(type="integer")
-     *
-     * @Expose
+     * @Groups({"list", "detail"})
      */
     private $id;
 
     /**
      * @ORM\Column(type="string", length=255)
      * @Assert\NotBlank(groups={"registration"})
-     *
-     * @Expose
+     *  @Groups({"list", "detail"})
      */
     private $name;
 
     /**
      * @ORM\Column(type="string", length=255)
      * @Assert\NotBlank(groups={"registration"})
-     *
-     * @Expose
+     * @Groups({"list", "detail"})
      */
     private $email;
 
     /**
      * @ORM\ManyToOne(targetEntity="App\Entity\Client", inversedBy="productUsers")
+     * @Groups({"list"})
      */
     private $client;
+
+    /**
+     * @ORM\Column(type="string", length=255, nullable=true)
+     * @Groups({"detail"})
+     */
+    private $phone;
+
+    /**
+     * @ORM\Column(type="string", length=255, nullable=true)
+     * @Groups({"detail"})
+     */
+    private $address;
 
     public function getId(): ?int
     {
@@ -98,6 +106,30 @@ class ProductUser
     public function setClient(?Client $client): self
     {
         $this->client = $client;
+
+        return $this;
+    }
+
+    public function getPhone(): ?string
+    {
+        return $this->phone;
+    }
+
+    public function setPhone(?string $phone): self
+    {
+        $this->phone = $phone;
+
+        return $this;
+    }
+
+    public function getAddress(): ?string
+    {
+        return $this->address;
+    }
+
+    public function setAddress(?string $address): self
+    {
+        $this->address = $address;
 
         return $this;
     }
