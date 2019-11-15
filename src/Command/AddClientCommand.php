@@ -52,6 +52,7 @@ class AddClientCommand extends Command
     protected function interact(InputInterface $input, OutputInterface $output)
     {
         $this->io->title('Create a new client');
+
         $email = $this->io->ask('What is the email of the client ?');
         $input->setArgument('email', $email);
 
