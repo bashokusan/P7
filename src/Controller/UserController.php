@@ -101,11 +101,7 @@ class UserController extends AbstractFOSRestController
             return $this->view($validationErrors, Response::HTTP_BAD_REQUEST);
         }
 
-        $em = $this->getDoctrine()->getManager();
-        $em->persist($user);
-        $em->flush();
-
-        $this->manager->deleteCache();
+        $this->manager->createUser($user);
 
         return $this->view(
             $user,
@@ -155,10 +151,7 @@ class UserController extends AbstractFOSRestController
             $productUser->setAddress($newUser->getAddress());
         };
 
-        $em = $this->getDoctrine()->getManager();
-        $em->flush();
-
-        $this->manager->deleteCache();
+        $this->manager->updateUser();
 
         return $this->view(
             $productUser,
@@ -184,11 +177,7 @@ class UserController extends AbstractFOSRestController
      */
     public function deleteAction(ProductUser $productUser)
     {
-        $em = $this->getDoctrine()->getManager();
-        $em->remove($productUser);
-        $em->flush();
-
-        $this->manager->deleteCache();
+        $this->manager->deleteUser($productUser);
 
         return;
     }

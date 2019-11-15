@@ -35,14 +35,14 @@ class Product
 
     /**
      * @ORM\Column(type="string", length=255)
-     * @Assert\NotBlank(groups={"add"})
+     * @Assert\NotBlank(groups={"add"}, message="Ce champ est obligatoire")
      * @Groups({"list", "detail"})
      */
     private $name;
 
     /**
      * @ORM\Column(type="string", length=255)
-     * @Assert\NotBlank(groups={"add"})
+     * @Assert\NotBlank(groups={"add"}, message="Ce champ est obligatoire")
      * @Groups({"list", "detail"})
      */
     private $reference;

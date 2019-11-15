@@ -39,14 +39,14 @@ class ProductUser
 
     /**
      * @ORM\Column(type="string", length=255)
-     * @Assert\NotBlank(groups={"registration"})
+     * @Assert\NotBlank(groups={"registration"}, message="Ce champ est obligatoire")
      *  @Groups({"list", "detail"})
      */
     private $name;
 
     /**
      * @ORM\Column(type="string", length=255)
-     * @Assert\NotBlank(groups={"registration"})
+     * @Assert\NotBlank(groups={"registration"}, message="Ce champ est obligatoire")
      * @Groups({"list", "detail"})
      */
     private $email;

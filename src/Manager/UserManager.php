@@ -5,6 +5,7 @@ namespace App\Manager;
 
 use App\Entity\ProductUser;
 use App\Repository\ProductUserRepository;
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Security\Core\Security;
 use Symfony\Contracts\Cache\CacheInterface;
 use Symfony\Contracts\Cache\ItemInterface;
@@ -23,12 +24,17 @@ class UserManager
      * @var Security
      */
     private $security;
+    /**
+     * @var EntityManagerInterface
+     */
+    private $entityManager;
 
-    public function __construct(CacheInterface $cache, ProductUserRepository $repository, Security $security)
+    public function __construct(CacheInterface $cache, ProductUserRepository $repository, Security $security, EntityManagerInterface $entityManager)
     {
         $this->cache = $cache;
         $this->repository = $repository;
         $this->security = $security;
+        $this->entityManager = $entityManager;
     }
 
     public function getShowAll(){
@@ -52,7 +58,30 @@ class UserManager
         return $productUser;
     }
 
-    public function deleteCache()
+    public function createUser(ProductUser $user)
+    {
+        $this->entityManager->persist($user);
+        $this->entityManager->flush();
+
+        $this->deleteCache();
+    }
+
+    public function updateUser()
+    {
+        $this->entityManager->flush();
+
+        $this->deleteCache();
+    }
+
+    public function deleteUser(ProductUser $user)
+    {
+        $this->entityManager->remove($user);
+        $this->entityManager->flush();
+
+        $this->deleteCache();
+    }
+
+    private function deleteCache()
     {
         $this->cache->delete('showAllUser');
         $this->cache->delete('showActionUser');
