@@ -41,15 +41,7 @@ class ProductManager
         return $product;
     }
 
-    public function getShowUnique(Product $product){
-        return $this->cache->get('showActionProduct', function(ItemInterface $item) use ($product) {
-            $item->expiresAfter(3600);
-
-            return $this->showAction($product);
-        });
-    }
-
-    private function showAction(Product $product)
+    public function getShowUnique(Product $product)
     {
         return $product;
     }

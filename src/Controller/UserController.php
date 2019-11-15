@@ -79,6 +79,7 @@ class UserController extends AbstractFOSRestController
      *    path = "api/users",
      *    name = "app_user_create"
      * )
+     * @View(serializerGroups={"list"})
      * @ParamConverter("user", converter="fos_rest.request_body")
      * @param ProductUser $user
      * @param ValidatorInterface $validator
@@ -118,6 +119,7 @@ class UserController extends AbstractFOSRestController
      *    name = "app_user_update",
      *    requirements = {"id"="\d+"}
      * )
+     * @View(serializerGroups={"detail"})
      * @ParamConverter("newUser", converter="fos_rest.request_body")
      * @SWG\Response(
      *     response=201,

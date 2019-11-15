@@ -35,15 +35,10 @@ class AppFixtures extends Fixture
             $user = new ProductUser();
             $user->setName($faker->userName)
                 ->setEmail($faker->safeEmail)
-                ->setClient($faker->randomElement($clients));
+                ->setClient($faker->randomElement($clients))
+                ->setPhone($faker->phoneNumber)
+                ->setAddress($faker->address);
             $manager->persist($user);
-        }
-
-        for ($p = 0; $p < 20; $p++){
-            $product = new Product;
-            $product->setName($faker->domainWord)
-                  ->setReference($faker->ean13);
-            $manager->persist($product);
         }
 
         $manager->flush();
