@@ -8,25 +8,45 @@ use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Validator\Constraints as Assert;
 use Hateoas\Configuration\Annotation as Hateoas;
 
-  /**
-  * @ORM\Entity(repositoryClass="App\Repository\ProductUserRepository")
-  * @UniqueEntity(fields={"email"}, message="Cet utilisateur existe déjà", groups={"registration"})
-  *
-  * @Hateoas\Relation(
-  *    "self",
-  *    href = @Hateoas\Route(
-  *        "app_users_show",
-  *        parameters = {"id" = "expr(object.getId())"},
-  *        absolute = true
-  *    ),
-   *     exclusion = @Hateoas\Exclusion(groups={"list"})
-  * )
-  *
-  * @Hateoas\Relation(
-  *    "client",
-  *    embedded = @Hateoas\Embedded("expr(object.getclient())")
-  * )
-  */
+    /**
+    * @ORM\Entity(repositoryClass="App\Repository\ProductUserRepository")
+    * @UniqueEntity(fields={"email"}, message="Cet utilisateur existe déjà", groups={"registration"})
+    *
+    * @Hateoas\Relation(
+    *    "self",
+    *    href = @Hateoas\Route(
+    *        "app_users_show",
+    *        parameters = {"id" = "expr(object.getId())"},
+    *        absolute = true
+    *    ),
+    *     exclusion = @Hateoas\Exclusion(groups={"list"})
+    * )
+    *
+    * @Hateoas\Relation(
+    *    "update",
+    *    href = @Hateoas\Route(
+    *        "app_user_update",
+    *        parameters = {"id" = "expr(object.getId())"},
+    *        absolute = true
+    *    ),
+    *     exclusion = @Hateoas\Exclusion(groups={"detail"})
+    * )
+    *
+    * @Hateoas\Relation(
+    *    "delete",
+    *    href = @Hateoas\Route(
+    *        "app_user_delete",
+    *        parameters = {"id" = "expr(object.getId())"},
+    *        absolute = true
+    *    ),
+    *     exclusion = @Hateoas\Exclusion(groups={"detail"})
+    * )
+    *
+    * @Hateoas\Relation(
+    *    "client",
+    *    embedded = @Hateoas\Embedded("expr(object.getclient())")
+    * )
+    */
 class ProductUser
 {
     /**
